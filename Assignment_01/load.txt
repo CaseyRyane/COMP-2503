@@ -1,0 +1,36 @@
+	while (fileReader.hasNextLine()) {
+			String line = fileReader.nextLine();
+			if (line.equals("***")) {
+				if (fileReader.hasNextLine()) {
+					fileReader.nextLine();
+					fileReader.nextLine();
+					fileReader.nextLine();
+				}
+			} else {
+				String nextIngredientLine = fileReader.nextLine();
+				String ingredient = nextIngredientLine.substring(nextIngredientLine.lastIndexOf(" ") + 1);
+
+				boolean newIngredient = true;
+				for (int i = 0; i < foodList.size(); i++) {
+
+					Food listItem = foodList.get(i);
+					String foodName = listItem.getFoodName();
+					if (ingredient.contains(foodName)) {
+						listItem.setTimesUsed(listItem.getTimesUsed() + 1);
+						i = foodList.size() + 1;
+						newIngredient = false;
+					}
+				}
+
+				if (newIngredient) {
+
+					Food newFood = new Food(ingredient, 1);
+					String ing = newFood.getFoodName();
+					int num = newFood.getTimesUsed();
+
+					foodList.add(newFood);
+					sortList();
+				}
+
+			}
+		}
