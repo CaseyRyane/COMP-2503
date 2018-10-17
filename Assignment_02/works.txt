@@ -10,28 +10,28 @@ import java.util.Collections;
  * @author Casey Ryane
  *
  */
-public class A1 {
+public class A2 {
 
-	private static Scanner sc = new Scanner(System.in);
-	private static ArrayList<Food> foodList;
-	private static A1 a1;
+	private Scanner sc = new Scanner(System.in);
+	private SLL<Food> foodList;
+	private A2 a2;
 
 	/**
 	 * No argument constructor for the A1 class that initializes the main ArrayList
 	 * used to store the ingredients from the basic ingredient list and any
 	 * ingredients from the "recipe book"
 	 */
-	public A1() {
-		foodList = new ArrayList<>();
+	public A2() {
+		foodList = new SLL<>();
 	}
 
 	/**
 	 * Main method is run and instantiates a new a1 object.
 	 * 
 	 */
-	public static void main(String[] args) {
-		a1 = new A1();
-		a1.run();
+	public void main(String[] args) {
+		a2 = new A2();
+		a2.run();
 	}
 
 	/**
@@ -40,18 +40,18 @@ public class A1 {
 	 * Print detailed formatted output.
 	 * 
 	 */
-	public static void run() {
-		loadBasicFoodList();
+	public void run() {
+		loadBasicfoodList();
 		getInput();
 		printOutput();
 	}
 
 	/**
 	 * New Input is read from the file, all Title, *'s and directions are discarded.
-	 * ALl new ingredients are read in an added to the FoodList or frequency is incremented 
+	 * ALl new ingredients are read in an added to the foodList or frequency is incremented 
 	 * if the ingredient previously existed.
 	 */
-	private static void getInput() {
+	private void getInput() {
 		do {
 			String nextLine = sc.nextLine();
 			if (nextLine.equals("---")) {
@@ -79,7 +79,7 @@ public class A1 {
 	 *            a string that contains a food item.
 	 * @return The name of the food item to be incremented or added to the foodList
 	 */
-	private static String getIngredientName(String foodItem) {
+	private String getIngredientName(String foodItem) {
 		boolean foodAlreadyExists = false;
 		String ingredient = "";
 		for (int i = 0; i < foodList.size(); i++) {
@@ -107,7 +107,7 @@ public class A1 {
 	 * @param foodItem a string containing new food items.
 	 * @return A String containing a single ingredient name.
 	 */
-	private static String trimIngredient(String foodItem){
+	private String trimIngredient(String foodItem){
 		foodItem = foodItem.trim();
 		String ingredient = foodItem.substring(foodItem.lastIndexOf(" ") + 1);
 		
@@ -128,7 +128,7 @@ public class A1 {
 	 * @param ingredient
 	 *            the name of the ingredient to be added to the foodList
 	 */
-	private static void addIngredient(String ingredient) {
+	private void addIngredient(String ingredient) {
 		boolean newIngredient = true;
 		for (int i = 0; i < foodList.size(); i++) {
 			Food listItem = foodList.get(i);
@@ -152,10 +152,10 @@ public class A1 {
 	 * @param ingredient
 	 *            the name of the ingredient to be added.
 	 */
-	private static void addNewIngredient(String ingredient) {
+	private void addNewIngredient(String ingredient) {
 		Food newFood = new Food(ingredient, 1);
 		foodList.add(newFood);
-		Collections.sort(foodList, Food.CompIngLength);
+		//Collections.sort(foodList, Food.CompIngLength);
 	}
 
 	/**
@@ -164,7 +164,7 @@ public class A1 {
 	 * Up to the top 10 most common ingredients are printed in order from most frequent to least used. 
 	 * The complete list of foods used in alphabetical order are printed.
 	 */
-	private static void printOutput() {
+	private void printOutput() {
 		int numIngredients = getTotalNumIngredients();
 		System.out.println("The recipe book has " + numIngredients + " different ingredients");
 		System.out.println("---------------------------------------");
@@ -188,9 +188,9 @@ public class A1 {
 	 * @return a formatted string containing up to 10 of the most common ingredients
 	 *         used
 	 */
-	private static String mostCommonIngredients() {
-		Collections.sort(foodList);
-		Collections.sort(foodList, Food.CompFrequency);
+	private String mostCommonIngredients() {
+	//	Collections.sort(foodList);
+		//Collections.sort(foodList, Food.CompFrequency);
 		int numIngredients = getTotalNumIngredients();
 		if (numIngredients >= 10) {
 			numIngredients = 10;
@@ -210,10 +210,11 @@ public class A1 {
 	 * 
 	 * @return a formated string containing all ingredients with frequency > 0.
 	 */
-	private static String allFoodUsed() {
-		Collections.sort(foodList);
+	private String allFoodUsed() {
+		//Collections.sort(foodList);
 		String allFood = "";
-		for (Food food : foodList) {
+		for(int i = 0; i < foodList.size(); i ++){
+			Food food = foodList.get(i);
 			if (food.getTimesUsed() > 0) {
 				allFood += String.format("(%s,%d)%n", food.getFoodName(), food.getTimesUsed());
 			}
@@ -227,22 +228,20 @@ public class A1 {
 	 * 
 	 * @return an int that represents the number of ingredients used.
 	 */
-	private static int getTotalNumIngredients() {
+	private int getTotalNumIngredients() {
 		int numIngredients = 0;
-		for (Food food : foodList) {
-			if (food.getTimesUsed() > 0) {
-				numIngredients++;
-			}
+		for(int i = 0; i < foodList.size(); i++){
+			numIngredients ++;
 		}
 		return numIngredients;
 	}
 
 	/**
-	 * This method loads all basic ingredients into the FoodList with a times used
+	 * This method loads all basic ingredients into the foodList with a times used
 	 * count at 0. 
 	 * Sorts the list by the length of ingredient names. 
 	 */
-	private static void loadBasicFoodList() {
+	private void loadBasicfoodList() {
 		foodList.add(new Food("baking powder"));
 		foodList.add(new Food("baking soda"));
 		foodList.add(new Food("cheese"));
@@ -273,7 +272,7 @@ public class A1 {
 		foodList.add(new Food("oil"));
 		foodList.add(new Food("fish"));
 		
-		Collections.sort(foodList, Food.CompIngLength);
+		//Collections.sort(foodList, Food.CompIngLength);
 
 	}
 

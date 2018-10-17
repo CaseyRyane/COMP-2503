@@ -1,0 +1,218 @@
+import java.util.Scanner;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+
+/**
+ * The A1 class reads input from a file, populates an ArrayList with food items,
+ * sorts the arrayList and prints out the contents to a file in a structured
+ * manner.
+ * 
+ * @author Casey Ryane
+ *
+ */
+public class A1 {
+
+	private Scanner keyboard = new Scanner(System.in);
+	private static ArrayList<Food> foodList;
+	private static A1 a1;
+	private static String fileName;
+
+	public A1() {
+		foodList = new ArrayList<>();
+		fileName = "recipebook1.txt";
+	}
+
+	public static void main(String[] args) throws FileNotFoundException {
+		a1 = new A1();
+		a1.run();
+
+	}
+
+	public static void run() throws FileNotFoundException {
+		loadBasicFoodList();
+		getInput();
+		sortIngredients();
+		printOutput();
+	}
+
+	private static void getInput() throws FileNotFoundException {
+		File recipeBook = new File(fileName);
+		Scanner fileReader = new Scanner(recipeBook);
+		do {
+			String nextLine = fileReader.nextLine();
+			if (nextLine.equals("---")) {
+				boolean recipieEnd = false;
+				while (!recipieEnd) {
+					String foodItem = fileReader.nextLine();
+					if (foodItem.equals("---")) {
+						recipieEnd = true;
+					} else {
+						String ingredient = getIngredientName(foodItem);
+						addIngredient(ingredient);
+					}
+				}
+			}
+		} while (fileReader.hasNext());
+
+		fileReader.close();
+	}
+
+	private static String getIngredientName(String foodItem) {
+		String ingredient = foodItem.replaceAll("^.*?(\\w+)\\W*$", "$1");
+
+		if (ingredient.charAt(ingredient.length() - 1) == 's') {
+			ingredient = ingredient.substring(0, ingredient.length() - 1);
+			if (ingredient.charAt(ingredient.length() - 1) == 'e') {
+				ingredient = ingredient.substring(0, ingredient.length() - 1);
+			}
+		}
+		return ingredient;
+	}
+
+	private static void addIngredient(String ingredient) {
+		boolean newIngredient = true;
+		for (int i = 0; i < foodList.size(); i++) {
+			Food listItem = foodList.get(i);
+			String foodName = listItem.getFoodName();
+
+			if (ingredient.contains(foodName)) {
+				listItem.incrementTimesUsed();
+				i = foodList.size() + 1;
+				newIngredient = false;
+			}
+		}
+		if (newIngredient) {
+			addNewIngredient(ingredient);
+		}
+	}
+
+	private static void addNewIngredient(String ingredient) {
+		Food newFood = new Food(ingredient, 1);
+		String ing = newFood.getFoodName();
+		int num = newFood.getTimesUsed();
+		foodList.add(newFood);
+		Collections.sort(foodList, Food.CompIngLength);
+	}
+
+	private static void sortIngredients() {
+
+	}
+
+	private static void printOutput() {
+		int numIngredients = getTotalNumIngredients();
+		System.out.println("The recipe book has " + numIngredients + " different ingredients");
+		System.out.println("---------------------------------------");
+		if (numIngredients >= 10) {
+			numIngredients = 10;
+		}
+		System.out.println("Top " + numIngredients + " ingredients, from most common to least common");
+		String mostCommon = mostCommonIngredients();
+		System.out.print(mostCommon);
+		System.out.println("---------------------------------------");
+		System.out.println("The complete list of foods in the recipe book, in alphabetical order");
+		String allFood = allFoodUsed();
+		System.out.println(allFood);
+	}
+
+	private static String mostCommonIngredients() {
+		Collections.sort(foodList);
+		Collections.sort(foodList, Food.CompFrequency);
+		int numIngredients = getTotalNumIngredients();
+		String mostCommon = "";
+		if (numIngredients >= 10) {
+			numIngredients = 10;
+		}
+		for (int i = 0; i < numIngredients; i++) {
+			Food food = foodList.get(i);
+			mostCommon += String.format("(%s,%d)%n", food.getFoodName(), food.getTimesUsed());
+		}
+		return mostCommon;
+	}
+
+	private static String allFoodUsed() {
+		Collections.sort(foodList);
+		String allFood = "";
+		for (Food food : foodList) {
+			if (food.getTimesUsed() > 0) {
+				allFood += String.format("(%s,%d)%n", food.getFoodName(), food.getTimesUsed());
+			}
+		}
+		return allFood;
+	}
+
+	private static int getTotalNumIngredients() {
+		int numIngredients = 0;
+		for (Food food : foodList) {
+			if (food.getTimesUsed() > 0) {
+				numIngredients++;
+			}
+		}
+		return numIngredients;
+	}
+
+	private static void loadBasicFoodList() {
+		Food newFood = new Food("baking powder");
+		foodList.add(newFood);
+		newFood = new Food("baking soda");
+		foodList.add(newFood);
+		newFood = new Food("cheese");
+		foodList.add(newFood);
+		newFood = new Food("broth");
+		foodList.add(newFood);
+		newFood = new Food("tomato paste");
+		foodList.add(newFood);
+		newFood = new Food("tomato sauce");
+		foodList.add(newFood);
+		newFood = new Food("tomato");
+		foodList.add(newFood);
+		newFood = new Food("flour");
+		foodList.add(newFood);
+		newFood = new Food("egg");
+		foodList.add(newFood);
+		newFood = new Food("garlic");
+		foodList.add(newFood);
+		newFood = new Food("rice");
+		foodList.add(newFood);
+		newFood = new Food("onion");
+		foodList.add(newFood);
+		newFood = new Food("salt");
+		foodList.add(newFood);
+		newFood = new Food("pepper");
+		foodList.add(newFood);
+		newFood = new Food("vinegar");
+		foodList.add(newFood);
+		newFood = new Food("carrot");
+		foodList.add(newFood);
+		newFood = new Food("sweet potato");
+		foodList.add(newFood);
+		newFood = new Food("potato");
+		foodList.add(newFood);
+		newFood = new Food("cream");
+		foodList.add(newFood);
+		newFood = new Food("milk");
+		foodList.add(newFood);
+		newFood = new Food("bean");
+		foodList.add(newFood);
+		newFood = new Food("green bean");
+		foodList.add(newFood);
+		newFood = new Food("beef");
+		foodList.add(newFood);
+		newFood = new Food("chicken");
+		foodList.add(newFood);
+		newFood = new Food("cumin");
+		foodList.add(newFood);
+		newFood = new Food("basil");
+		foodList.add(newFood);
+		newFood = new Food("oregano");
+		foodList.add(newFood);
+		newFood = new Food("oil");
+		foodList.add(newFood);
+		newFood = new Food("fish");
+		foodList.add(newFood);
+
+	}
+
+}

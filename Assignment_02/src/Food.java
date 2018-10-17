@@ -1,4 +1,4 @@
-import java.util.*;
+import java.util.Comparator;
 
 /**
  * The Food class contains a single food item name and the number of times the
@@ -73,6 +73,11 @@ public class Food implements Comparable<Food> {
 	public void incrementTimesUsed() {
 		timesUsed += 1;
 	}
+	
+	public String toString(){
+		String food = "(" + foodName +"," + timesUsed +")";
+	return food;
+	}
 
 	/**
 	 * An equals method to determine if a food item is the same as another
@@ -105,6 +110,8 @@ public class Food implements Comparable<Food> {
 		return this.getFoodName().compareTo(a.getFoodName());
 	}
 
+								
+	
 	/**
 	 * A comparator method that compares food objects by the length of the name of
 	 * the food item. used to completely sort a food list.

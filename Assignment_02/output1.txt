@@ -1,0 +1,17 @@
+The recipe book has 6 different ingredients
+---------------------------------------
+Top 6 ingredients, from most common to least common
+(bean,2)
+(egg,2)
+(applesauce,1)
+(breadcrumbs,1)
+(flour,1)
+(sauce,1)
+---------------------------------------
+The complete list of foods in the recipe book, in alphabetical order
+(applesauce,1)
+(bean,2)
+(breadcrumb,1)
+(egg,2)
+(flour,1)
+(sauce,1)
