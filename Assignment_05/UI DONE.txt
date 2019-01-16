@@ -1,0 +1,156 @@
+import java.io.*;
+import java.util.*;
+
+public class UserInterface {
+
+	private Scanner keyboard = new Scanner(System.in);
+	private static UserInterface UI;
+	private int sequenceLength;
+	private HashMap<Kmer, ArrayList<Integer>> map;
+
+	public static void main(String[] args) {
+		UI = new UserInterface();
+		UI.run();
+	}
+
+	private void run() {
+		String fileName = getFileName();
+		fileName = "yeast1.fasta";
+		// fileName = "yeet.fasta";
+		// fileName = "yeast1Sample.fasta";
+		try {
+			sequenceLength = getSequenceLength();
+			map = new HashMap<>((int)(1.5 * (Math.pow(4, sequenceLength))));
+			loadFile(fileName, sequenceLength);
+		} catch (InputMismatchException e) {
+			System.out.println("Invalid input for \"k\" program terminated");
+		} catch (FileNotFoundException e) {
+			System.out.println("File Not Found, program terminated.");
+		}
+		sequenceSearch();
+	}
+
+	private void loadFile(String fileName, int k) throws FileNotFoundException {
+		File fastaFile = new File(fileName);
+		FileReader fr = new FileReader(fastaFile);
+		BufferedReader reader = new BufferedReader(fr);
+		int positionCounter = 0;
+		
+		try {
+			String comment = reader.readLine();
+			System.out.println("Loading genome from file with description: " + comment);
+
+			StringBuilder kmerString = new StringBuilder();
+
+			String nextLine = "";
+			Kmer newKmer = new Kmer();
+			while (nextLine != null) {
+				nextLine = reader.readLine();
+				
+				for (int i = 0; i <= nextLine.length() - 1; i++) {
+					kmerString.append(nextLine.charAt(i));
+					
+					if (kmerString.length() == sequenceLength) {
+						newKmer = new Kmer(kmerString.toString());
+					} else if (kmerString.length() > sequenceLength) {
+						kmerString.deleteCharAt(0);
+						newKmer = new Kmer(kmerString.toString());
+					}
+		
+					if (kmerString.length() == sequenceLength) {
+						ArrayList<Integer> positionList = new ArrayList<Integer>();
+
+						if (map.containsKey(newKmer)) {
+							
+							positionList = map.get(newKmer);
+							positionList.add(positionCounter);
+							map.put(newKmer, positionList);
+						} else {
+							positionList.add(positionCounter);
+							map.put(newKmer, positionList);
+						}
+						positionCounter++;
+
+					} 
+				}
+
+			}
+		} catch (IOException e) {
+		} catch (NullPointerException e) {
+		}
+		System.out.println("Sequences of size: " + sequenceLength + " count: " + positionCounter);
+		System.out.println("Map size: " + map.size());
+	}
+
+	private String getFileName() {
+		System.out.println("Enter file name: ");
+		String fileName = keyboard.nextLine();
+		return fileName;
+	}
+
+	private int getSequenceLength() throws InputMismatchException {
+		System.out.println("Enter the length (k) of the sequence to store ");
+		int K = keyboard.nextInt();
+		keyboard.nextLine();
+		return K;
+	}
+
+	private void sequenceSearch() {
+		long startTime = 0;
+		
+		Boolean userWantsToContinue = true;
+		int numLocations = 0;
+		while (userWantsToContinue) {
+			String sequence = promptForSequence();
+
+			userWantsToContinue = validateSequence(sequence);
+			if (!sequence.equalsIgnoreCase("q")) {
+
+				Kmer kmer = new Kmer(sequence);
+				String position = "";
+				boolean present = false;
+				startTime = System.currentTimeMillis();
+				for (int i = 0; i < 1000000; i++) {
+					if (map.containsKey(kmer)) {
+						present = true;
+					}
+				}
+				long stopTime = System.currentTimeMillis();
+				if(present){
+					position = map.get(kmer).toString();
+					numLocations = map.get(kmer).size();	
+				}else{
+					position = "";
+					numLocations = 0;
+				}
+
+				
+				long elapsedTime = stopTime - startTime;
+				System.out.println("Sequence: " + sequence);
+				System.out.println(position);
+				System.out.println("There are " + numLocations + " locations wth the sequence: " + sequence);
+				System.out.println("Search time: " + elapsedTime + "ms");
+			}else{
+				System.out.println("Program Terminated");
+			}
+		}
+	}
+
+	private String promptForSequence() {
+		System.out.println("Enter new sequence to find postions. Enter \"q\" to quit...");
+		String input = keyboard.nextLine();
+		return input;
+	}
+
+	private boolean validateSequence(String sequence) {
+		boolean result = true;
+		if (sequence.equalsIgnoreCase("q")) {
+			result = false;
+		} else if (sequence.length() != sequenceLength) {
+			System.out.println("Given sequence does not match length of sequence stored. Program terminated");
+			result = false;
+		}
+		return result;
+	}
+
+}

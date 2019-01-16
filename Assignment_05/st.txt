@@ -1,0 +1,56 @@
+https://www.mangareader.net/zipang/31
+
+	public boolean evaluate() {
+		char result = evaluate(root);
+		if (result == '0') {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
+	public char evaluate(TreeNode node) {
+		if (node.getLeft() == null && node.getRight() == null) {
+			return node.getData();
+		} else {
+
+			char result = ' ';
+			char left = ' ';
+			char right = evaluate(node.getRight());
+			if (node.getLeft() != null) {
+				left = evaluate(node.getLeft());
+			}
+			char operator = node.getData();
+
+			if (operator == '&') {
+				if (left == '1' && right == '1') {
+					result = '1';
+				} else {
+					result = '0';
+				}
+			} else if (operator == '|') {
+				if (left == '1' || right == '1') {
+					result = '1';
+				} else {
+					result = '0';
+				}
+			} else if (operator == '^') {
+				if(left == '1' && right == '0'){
+					result = '1';
+				}else if(left == '0' && right == '1'){	
+					result = '1';
+				}else{
+				result = 0;	
+				}
+			} else if (operator == '!') {
+				if(right == '1'){
+					result = '0';
+				}else{
+					result = '1';
+				}
+			}
+		
+				return result;	
+		}
+	}

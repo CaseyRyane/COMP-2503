@@ -1,0 +1,51 @@
+		File fastaFile = new File(fileName);
+		FileReader fr = new FileReader(fastaFile);
+		BufferedReader reader = new BufferedReader(fr);
+		try {
+			String comment = reader.readLine();
+			System.out.println("Loading genome from file with description: " + comment);
+
+			StringBuilder kmerString = new StringBuilder();
+
+			int next = 1;
+			int position = 0;
+			Kmer newKmer = new Kmer();
+			String line = reader.readLine();
+			System.out.println(line.substring(0,line.length()-1));
+			while (next != -1) {
+
+				next = reader.read();
+				if (next != 10 || next != -1 || next != 0 || next != 63 || (char)next != '\n' || next != 13) {
+					kmerString.append((char)next);
+				}
+				if(kmerString.length() == sequenceLength){
+					newKmer = new Kmer(kmerString.toString());
+				}
+				else if (kmerString.length() > sequenceLength) {
+					kmerString.deleteCharAt(0);
+					newKmer = new Kmer(kmerString.toString());
+				}
+				if(kmerString.length() == sequenceLength){
+				ArrayList<Integer> positionList = new ArrayList<Integer>();
+				
+				if(map.containsKey(newKmer)){
+					positionList = map.get(newKmer);
+					positionList.add(position);
+					map.put(newKmer, positionList);
+				}else{		
+					positionList.add(position);
+					map.put(newKmer, positionList);
+				}
+				position++;
+				}
+							
+		}
+			System.out.println(position);
+		} catch (IOException e) {
+		}
+		for (Kmer key : map.keySet()) {
+			System.out.println(key.toString());
+			System.out.println(map.get(key).toString());
+		}
+
+	}

@@ -1,0 +1,86 @@
+
+public class Kmer {
+
+	private String sequence;	
+	private int hash = 0;
+
+	public Kmer() {
+		sequence = null;
+	}
+
+	public Kmer(String sequence) {
+		this.sequence = sequence;
+
+	}
+
+	public void setSequence(String sequence) {
+		this.sequence = sequence;
+	}
+
+	public String getSequence() {
+		return sequence;
+	}
+
+	public String toString() {
+		return sequence;
+	}
+	
+
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Kmer kmer = (Kmer) o;
+		if (sequence.equals(kmer.getSequence())) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	// Hashcode Number 1
+	/*
+	@Override
+	public int hashCode() {
+		return sequence.hashCode();
+	}
+*/
+	/*
+	//Hashcode Number 2
+	public int hashCode()
+    {	
+        int h = hash;
+        char value[] = sequence.toCharArray();
+        if (h == 0 && value.length > 0) {
+            char val[] = value;
+            for (int i = 0; i < value.length; i++) {
+                h = 31 * h + val[i];
+            }
+            this.hash = h;
+        }
+        return h;
+    }
+	*/
+			
+	//Hashcode Number 3
+	public int hashCode()
+    {		
+		int hash = 0;
+        char value[] = sequence.toCharArray();
+        if (value.length > 0) {
+            char val[] = value;
+            for (int i = 0; i < value.length; i++) {
+                hash =  hash * hash + val[i];
+            }
+        }
+        return hash;
+    }
+	
+	
+	
+	
+	
+}
